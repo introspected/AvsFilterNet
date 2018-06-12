@@ -34,6 +34,8 @@ namespace AvsFilterNet {
 	}
 
 	VideoFrame^ Clip::GetFrame(int n, ScriptEnvironment^ env) {
+		auto maxFrame = (_clip)->GetVideoInfo().num_frames - 1;
+		n = n > maxFrame ? maxFrame : n;
 		return gcnew VideoFrame((_clip)->GetFrame(n, env->GetNative()));
 	}
 
