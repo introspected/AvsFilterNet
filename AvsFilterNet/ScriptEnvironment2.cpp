@@ -102,7 +102,7 @@ namespace AvsFilterNet {
 		delete nfilter;
 	}
 
-	bool ScriptEnvironment2::Invoke(AVSValue^ result, String^ name, AVSValue^ args, array<String^>^ arg_names) {
+	bool ScriptEnvironment2::Invoke(AVSValue^% result, String^ name, AVSValue^ args, array<String^>^ arg_names) {
 		NativeString^ nname = gcnew NativeString(name);
 		List<NativeString^>^ n_arg_names;
 		const char** p_arg_names = NULL;
@@ -120,7 +120,10 @@ namespace AvsFilterNet {
 			}
 		}
 		try {
-			return _env->Invoke(&result->GetNative(), nname->GetPointer(), args ? args->GetNative() : NativeAVSValue(), p_arg_names);
+			auto native = NativeAVSValue();
+			bool success = _env->Invoke(&native, nname->GetPointer(), args ? args->GetNative() : NativeAVSValue(), p_arg_names);
+			result = gcnew AVSValue(native);
+			return success;
 		}
 		catch (AvisynthError err) {
 			throw gcnew AvisynthException(Marshal::PtrToStringAnsi(IntPtr((void*)err.msg)));

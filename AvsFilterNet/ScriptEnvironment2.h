@@ -48,7 +48,7 @@ namespace AvsFilterNet {
 		//void ParallelJob(ThreadWorkerFuncPtr jobFunc, void* jobData, IJobCompletion* completion);
 
 		// This version of Invoke will return false instead of throwing NotFound().
-		bool Invoke(AVSValue^ result, String^ name, AVSValue^ args, array<String^>^ arg_names);
+		bool Invoke([Out] AVSValue^% result, String^ name, AVSValue^ args, array<String^>^ arg_names);
 
 		// Support functions
 		IntPtr Allocate(size_t nBytes, size_t alignment, AvsAllocType type);
