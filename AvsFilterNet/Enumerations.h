@@ -59,8 +59,8 @@ namespace AvsFilterNet {
 
 		CS_Sample_Bits_Mask = 0b111 << CS_Shift_Sample_Bits,
 		CS_Sample_Bits_8 = 0 << CS_Shift_Sample_Bits,
-		CS_Sample_Bits_10 = 0b100 << CS_Shift_Sample_Bits,
-		CS_Sample_Bits_12 = 0b101 << CS_Shift_Sample_Bits,
+		CS_Sample_Bits_10 = 0b101 << CS_Shift_Sample_Bits,
+		CS_Sample_Bits_12 = 0b110 << CS_Shift_Sample_Bits,
 		CS_Sample_Bits_14 = 0b111 << CS_Shift_Sample_Bits,
 		CS_Sample_Bits_16 = 0b001 << CS_Shift_Sample_Bits,
 		CS_Sample_Bits_32 = 0b010 << CS_Shift_Sample_Bits,
