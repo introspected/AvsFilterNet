@@ -20,20 +20,6 @@ namespace AvsFilterNet {
 
 	public:
 
-		// Generic system to ask for various properties
-		size_t GetProperty(AvisynthProperty prop);
-
-		// Returns TRUE and the requested variable. If the method fails, returns FALSE and does not touch 'val'.
-		bool GetVar(String^ name, AVSValue^ val);
-
-		// Return the value of the requested variable.
-		// If the variable was not found or had the wrong type,
-		// return the supplied default value.
-		bool GetVar(String^ name, bool def);
-		int  GetVar(String^ name, int def);
-		double  GetVar(String^ name, double def);
-		String^ GetVar(String^ name, String^ def);
-
 		// Plugin functions
 		bool LoadPlugin(String^ filePath, bool throwOnError, AVSValue^ result);
 		void AddAutoloadDir(String^ dirPath, bool toFront);
@@ -47,12 +33,6 @@ namespace AvsFilterNet {
 		//IJobCompletion* NewCompletion(size_t capacity);
 		//void ParallelJob(ThreadWorkerFuncPtr jobFunc, void* jobData, IJobCompletion* completion);
 
-		// This version of Invoke will return false instead of throwing NotFound().
-		bool Invoke([Out] AVSValue^% result, String^ name, AVSValue^ args, array<String^>^ arg_names);
-
-		// Support functions
-		IntPtr Allocate(size_t nBytes, size_t alignment, AvsAllocType type);
-		void Free(IntPtr ptr);
 	};
 }
 
