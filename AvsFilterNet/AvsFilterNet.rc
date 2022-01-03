@@ -2,8 +2,8 @@
 #include <ntdef.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION             1,0,4,0
-PRODUCTVERSION        	1,0,4,0
+FILEVERSION             1,0,5,0
+PRODUCTVERSION        	1,0,5,0
 FILEFLAGSMASK           VS_FFI_FILEFLAGSMASK
 FILEFLAGS               0x0L
 FILEOS                  VOS__WINDOWS32
@@ -16,12 +16,12 @@ BEGIN
         BEGIN
         VALUE "Comments",         "A wrapper for AviSynth, making it possible to write simple filter in any .Net languages."
         VALUE "FileDescription",  "AvsFilterNet"
-        VALUE "FileVersion",      "1.0.4"
+        VALUE "FileVersion",      "1.0.5"
         VALUE "InternalName",     "AvsFilte"
-		VALUE "LegalCopyright",   "Copyright (C) 2009"
+		VALUE "LegalCopyright",   "Copyright (C) 2022"
         VALUE "OriginalFilename", "AvsFilterNet.dll"
         VALUE "ProductName",      "AvsFilterNet"
-        VALUE "ProductVersion",   "1.0.4"
+        VALUE "ProductVersion",   "1.0.5"
         END
     END
     BLOCK "VarFileInfo"
