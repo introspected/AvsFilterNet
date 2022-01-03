@@ -97,7 +97,46 @@ namespace AvsFilterNet {
 		}
 	}
 
-	AVSValue ^ ScriptEnvironment::GetVar(String^ name) {
+	bool ScriptEnvironment::Invoke(AVSValue^% result, String^ name, AVSValue^ args, array<String^>^ arg_names) {
+		NativeString^ nname = gcnew NativeString(name);
+		List<NativeString^>^ n_arg_names;
+		const char** p_arg_names = NULL;
+		if (arg_names && arg_names->Length > 0) {
+			n_arg_names = gcnew List<NativeString^>(arg_names->Length);
+			p_arg_names = (const char**)malloc(sizeof(char*) * arg_names->Length);
+			for (int i = 0; i < arg_names->Length; i++) {
+				if (String::IsNullOrEmpty(arg_names[i])) {
+					p_arg_names[i] = NULL;
+					continue;
+				}
+				NativeString^ str = gcnew NativeString(arg_names[i]);
+				p_arg_names[i] = str->GetPointer();
+				n_arg_names->Add(str);
+			}
+		}
+		try {
+			auto native = NativeAVSValue();
+			bool success = _env->InvokeTry(&native, nname->GetPointer(), args ? args->GetNative() : NativeAVSValue(), p_arg_names);
+			result = gcnew AVSValue(native);
+			return success;
+		}
+		catch (AvisynthError err) {
+			throw gcnew AvisynthException(Marshal::PtrToStringAnsi(IntPtr((void*)err.msg)));
+		}
+		finally {
+			delete nname;
+			if (p_arg_names) {
+				free(p_arg_names);
+				p_arg_names = NULL;
+				for (int i = 0; i < n_arg_names->Count; i++)
+				{
+					delete n_arg_names[i];
+				}
+			}
+		}
+	}
+
+	AVSValue^ ScriptEnvironment::GetVar(String^ name) {
 		NativeString^ nname = gcnew NativeString(name);
 		try {
 			AVSValue^ ret = gcnew AVSValue(_env->GetVar(nname->GetPointer()));
@@ -109,6 +148,51 @@ namespace AvsFilterNet {
 		finally {
 			delete nname;
 		}
+	}
+
+	bool ScriptEnvironment::GetVar(String^ name, AVSValue^ val) {
+		NativeString^ nname = gcnew NativeString(name);
+		try {
+			val = gcnew AVSValue(_env->GetVar(nname->GetPointer()));
+		}
+		catch (IScriptEnvironment::NotFound) {
+			throw gcnew VarNotFoundException(name);
+			return false;
+		}
+		finally {
+			delete nname;
+		}
+		return true;
+	}
+
+	bool ScriptEnvironment::GetVar(String^ name, bool def) {
+		NativeString^ nname = gcnew NativeString(name);
+		bool Result = _env->GetVarBool(nname->GetPointer(), def);
+		delete nname;
+		return Result;
+	}
+
+	int ScriptEnvironment::GetVar(String^ name, int def) {
+		NativeString^ nname = gcnew NativeString(name);
+		int Result = _env->GetVarInt(nname->GetPointer(), def);
+		delete nname;
+		return Result;
+	}
+
+	double ScriptEnvironment::GetVar(String^ name, double def) {
+		NativeString^ nname = gcnew NativeString(name);
+		double Result = _env->GetVarDouble(nname->GetPointer(), def);
+		delete nname;
+		return Result;
+	}
+
+	String^ ScriptEnvironment::GetVar(String^ name, String^ def) {
+		NativeString^ nname = gcnew NativeString(name);
+		NativeString^ ndef = gcnew NativeString(def);
+		String^ Result = gcnew String(_env->GetVarString(nname->GetPointer(), ndef->GetPointer()));
+		delete nname;
+		delete ndef;
+		return Result;
 	}
 
 	bool ScriptEnvironment::SetVar(String^ name, AVSValue^ val) {
@@ -203,5 +287,27 @@ namespace AvsFilterNet {
 
 	VideoFrame^ ScriptEnvironment::SubframePlanar(VideoFrame^ src, int rel_offset, int new_pitch, int new_row_size, int new_height, int rel_offsetU, int rel_offsetV, int new_pitchUV) {
 		return gcnew VideoFrame(_env->SubframePlanar(src->GetNative(), rel_offset, new_pitch, new_row_size, new_height, rel_offsetU, rel_offsetV, new_pitchUV));
+	}
+
+	size_t ScriptEnvironment::GetProperty(AvisynthProperty prop) {
+		return _env->GetEnvProperty((AvsEnvProperty)prop);
+	}
+
+	IntPtr ScriptEnvironment::Allocate(size_t nBytes, size_t alignment, AvsAllocType type) {
+		try {
+			return (IntPtr)_env->Allocate(nBytes, alignment, type);
+		}
+		catch (AvisynthError err) {
+			throw gcnew AvisynthException(Marshal::PtrToStringAnsi(IntPtr((void*)err.msg)));
+		}
+	}
+
+	void ScriptEnvironment::Free(IntPtr ptr) {
+		try {
+			_env->Free((void*)ptr);
+		}
+		catch (AvisynthError err) {
+			throw gcnew AvisynthException(Marshal::PtrToStringAnsi(IntPtr((void*)err.msg)));
+		}
 	}
 }

@@ -32,7 +32,21 @@ namespace AvsFilterNet {
 		/// <summary>Invokes another function/filter. You must dispose all AVSValues used in this method, including return value. Use <see cref="AVSValueCollector"/> to automatically do this.</summary>
 		AVSValue^ Invoke(String ^name, AVSValue ^args);
 
+		// This version of Invoke will return false instead of throwing NotFound().
+		bool Invoke([Out] AVSValue^% result, String^ name, AVSValue^ args, array<String^>^ arg_names);
+
+		bool GetVar(String^ name, AVSValue^ val);
+
+		// Return the value of the requested variable.
+		// If the variable was not found or had the wrong type,
+		// return the supplied default value.
+		bool GetVar(String^ name, bool def);
+		int  GetVar(String^ name, int def);
+		double  GetVar(String^ name, double def);
+		String^ GetVar(String^ name, String^ def);
+
 		AVSValue^ GetVar(String^ name);
+
 		bool SetVar(String^ name, AVSValue^ val);
 		bool SetGlobalVar(String^ name, AVSValue^ val);
 
@@ -67,6 +81,13 @@ namespace AvsFilterNet {
 		bool PlanarChromaAlignment(PlanarChromaAlignmentMode key);
 
 		VideoFrame^ SubframePlanar(VideoFrame^ src, int rel_offset, int new_pitch, int new_row_size, int new_height, int rel_offsetU, int rel_offsetV, int new_pitchUV);
+	
+		// Generic system to ask for various properties
+		size_t GetProperty(AvisynthProperty prop);
+
+		// Support functions
+		IntPtr Allocate(size_t nBytes, size_t alignment, AvsAllocType type);
+		void Free(IntPtr ptr);	
 	};
 };
 #endif
