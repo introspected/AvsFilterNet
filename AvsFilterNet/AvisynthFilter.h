@@ -8,6 +8,8 @@ namespace AvsFilterNet {
 		Clip^ _child;
 		bool _initialized;
 		VideoInfo _vi;
+		MtMode _mtMode;
+		static Dictionary<Type^, MtMode>^ _mtModeMap = gcnew Dictionary<Type^, MtMode>;
 	public:
 		~AvisynthFilter();
 		/// <summary>The constructor of <see cref="AvisynthFilter"/>.</summary>
@@ -59,5 +61,7 @@ namespace AvsFilterNet {
 		void GetAudio(void* buf, __int64 start, __int64 count, IScriptEnvironment* env);
 		void InitComplete();
 		AvisynthFilterNativeStub* GetNativeStub();
+		static MtMode GetMtMode(Type^ filterType);
+		static void SetMtMode(Type^ filterType, MtMode mtMode);
 	};
 };

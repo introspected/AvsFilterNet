@@ -86,6 +86,7 @@ void LoadNetPluginImpl(String^ path, IScriptEnvironment* env, bool throwErr) {
 				if (attr->MultiThreadingMode != AvsFilterNet::MtMode::UNKNOWN && env->FunctionExists("SetFilterMTMode")) {
 					auto env2 = static_cast<IScriptEnvironment2*>(env);
 					env2->SetFilterMTMode(name->GetPointer(), (NativeMtMode)attr->MultiThreadingMode, true);
+					AvisynthFilter::SetMtMode(attr->FilterType, attr->MultiThreadingMode);
 				}
 				delete name;
 				delete params;

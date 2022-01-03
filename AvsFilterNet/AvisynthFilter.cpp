@@ -3,6 +3,7 @@
 namespace AvsFilterNet {
 	AvisynthFilter::AvisynthFilter() {
 		_stub = new AvisynthFilterNativeStub(this);
+		_mtMode = GetMtMode(GetType());
 		_initialized = false;
 	}
 
@@ -45,6 +46,10 @@ namespace AvsFilterNet {
 	}
 
 	int AvisynthFilter::SetCacheHints(CacheType cachehints, int frame_range) {
+		if (CacheType::CACHE_GET_MTMODE == cachehints)
+		{
+			return (NativeMtMode)_mtMode;
+		}
 		return _child ? _child->SetCacheHints(cachehints, frame_range) : 0;
 	}
 
@@ -93,6 +98,16 @@ namespace AvsFilterNet {
 
 	AvisynthFilterNativeStub* AvisynthFilter::GetNativeStub() {
 		return _stub;
+	}
+
+	MtMode AvisynthFilter::GetMtMode(Type^ filterType)
+	{
+		return _mtModeMap->ContainsKey(filterType) ? _mtModeMap[filterType] : MtMode::UNKNOWN;
+	}
+
+	void AvisynthFilter::SetMtMode(Type^ filterType, MtMode mtMode)
+	{
+		_mtModeMap[filterType] = mtMode;
 	}
 
 	void AvisynthFilter::InitComplete() {

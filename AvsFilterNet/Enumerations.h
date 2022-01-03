@@ -260,7 +260,7 @@ namespace AvsFilterNet {
 		CACHE_GET_SIZE,
 		CACHE_GET_REQUESTED_CAP,
 		CACHE_GET_CAPACITY,
-		CACHE_GET_MTMODE,
+		CACHE_GET_MTMODE = 509,
 
 		CACHE_IS_CACHE_REQ,
 		CACHE_IS_CACHE_ANS,
@@ -296,6 +296,8 @@ namespace AvsFilterNet {
 		MULTI_INSTANCE = 2,
 		/// <summary>A single instance of the filter will be created and it will receive a single GetFrame request at once. Useful for source filters.</summary>
 		SERIALIZED = 3,
+		MT_SPECIAL_MT = 4,
+		MT_MODE_COUNT = 5
 	};
 
 	public enum class AvisynthProperty {
