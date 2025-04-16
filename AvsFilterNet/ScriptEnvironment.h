@@ -57,6 +57,8 @@ namespace AvsFilterNet {
 		//// align should be 4 or 8
 		VideoFrame^ NewVideoFrame(VideoInfo% vi);
 		VideoFrame^ NewVideoFrame(VideoInfo% vi, int align);
+		VideoFrame^ NewVideoFrameP(VideoInfo% vi, VideoFrame^ propSrc);
+		VideoFrame^ NewVideoFrameP(VideoInfo% vi, VideoFrame^ propSrc, int align);
 
 		bool MakeWritable(VideoFrame^ pvf);
 
@@ -81,13 +83,19 @@ namespace AvsFilterNet {
 		bool PlanarChromaAlignment(PlanarChromaAlignmentMode key);
 
 		VideoFrame^ SubframePlanar(VideoFrame^ src, int rel_offset, int new_pitch, int new_row_size, int new_height, int rel_offsetU, int rel_offsetV, int new_pitchUV);
-	
+
+		void CopyFrameProps(VideoFrame^ src, VideoFrame^ dst);
+
+		Nullable<int> ScriptEnvironment::PropGetInt(VideoFrame^ frame, String^ key, int index);
+
+		bool ScriptEnvironment::PropSetInt(VideoFrame^ frame, String^ key, int64_t value, bool append);
+
 		// Generic system to ask for various properties
-		size_t GetProperty(AvisynthProperty prop);
+		size_t GetEnvProperty(AvisynthProperty prop);
 
 		// Support functions
 		IntPtr Allocate(size_t nBytes, size_t alignment, AvsAllocType type);
-		void Free(IntPtr ptr);	
+		void Free(IntPtr ptr);
 	};
 };
 #endif

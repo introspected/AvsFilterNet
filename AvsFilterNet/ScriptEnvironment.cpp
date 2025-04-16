@@ -231,7 +231,17 @@ namespace AvsFilterNet {
 
 	VideoFrame^ ScriptEnvironment::NewVideoFrame(VideoInfo% vi, int align) {
 		pin_ptr<VideoInfo> pvi = &vi;
-		return gcnew VideoFrame(_env->NewVideoFrame(*(NativeVideoInfo*)(void*)pvi, align));
+		return gcnew VideoFrame(_env->NewVideoFrame(*static_cast<NativeVideoInfo*>(static_cast<void*>(pvi)), align));
+	}
+
+	VideoFrame^ ScriptEnvironment::NewVideoFrameP(VideoInfo% vi, VideoFrame^ propSrc) {
+		return NewVideoFrameP(vi, propSrc, FRAME_ALIGN);
+	}
+
+	VideoFrame^ ScriptEnvironment::NewVideoFrameP(VideoInfo% vi, VideoFrame^ propSrc, int align) {
+		pin_ptr<VideoInfo> pvi = &vi;
+		auto nativePropSrc = propSrc->GetNative();
+		return gcnew VideoFrame(_env->NewVideoFrameP(*static_cast<NativeVideoInfo*>(static_cast<void*>(pvi)), &nativePropSrc, align));
 	}
 
 	bool ScriptEnvironment::MakeWritable(VideoFrame^ pvf) {
@@ -289,7 +299,34 @@ namespace AvsFilterNet {
 		return gcnew VideoFrame(_env->SubframePlanar(src->GetNative(), rel_offset, new_pitch, new_row_size, new_height, rel_offsetU, rel_offsetV, new_pitchUV));
 	}
 
-	size_t ScriptEnvironment::GetProperty(AvisynthProperty prop) {
+	void ScriptEnvironment::CopyFrameProps(VideoFrame^ src, VideoFrame^ dst) {
+		auto dstNative = dst->GetNative();
+		_env->copyFrameProps(src->GetNative(), dstNative);
+	}
+
+	Nullable<int> ScriptEnvironment::PropGetInt(VideoFrame^ frame, String^ key, int index)
+	{
+		NativeString^ nKey = gcnew NativeString(key);
+		auto nFrame = frame->GetNative();
+		int error = 0;
+		auto res = _env->propGetInt(&nFrame->getConstProperties(), "_ChromaLocation", 0, &error);
+		delete nKey;
+		return error == 0 ? Nullable<int>(res) : Nullable<int>();
+	}
+
+	bool ScriptEnvironment::PropSetInt(VideoFrame^ frame, String^ key, int64_t value, bool append)
+	{
+		if (frame->GetNative()->IsPropertyWritable()) {
+			auto& properties = frame->GetNative()->getProperties();
+			NativeString^ nKey = gcnew NativeString(key);
+			_env->propSetInt(&properties, nKey->GetPointer(), value, append);
+			delete nKey;
+			return true;
+		}
+		return false;
+	}
+
+	size_t ScriptEnvironment::GetEnvProperty(AvisynthProperty prop) {
 		return _env->GetEnvProperty((AvsEnvProperty)prop);
 	}
 

@@ -11,8 +11,10 @@ namespace AvsFilterNet {
 	}
 
 	AvisynthFilterNativeStub::~AvisynthFilterNativeStub() {
-		delete _impl;
-		_impl = nullptr;
+		if (_impl) {
+			delete _impl;
+			_impl = nullptr;
+		}
 	}
 
 	PVideoFrame __stdcall AvisynthFilterNativeStub::GetFrame(int n, IScriptEnvironment* env) {

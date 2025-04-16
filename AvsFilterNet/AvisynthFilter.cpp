@@ -8,8 +8,8 @@ namespace AvsFilterNet {
 	}
 
 	AvisynthFilter::~AvisynthFilter() {
-		_stub = nullptr;
-		if (_child) {
+		if (_stub) {
+			_stub = nullptr;
 			delete _child;
 			_child = nullptr;
 		}
@@ -80,6 +80,10 @@ namespace AvsFilterNet {
 
 	VideoFrame^ AvisynthFilter::NewVideoFrame(ScriptEnvironment^ env) {
 		return NewVideoFrame(FRAME_ALIGN, env);
+	}
+
+	VideoFrame^ AvisynthFilter::NewVideoFrame(ScriptEnvironment^ env, VideoFrame^ propSrc) {
+		return env->NewVideoFrameP(_vi, propSrc, FRAME_ALIGN);
 	}
 
 	VideoFrame^ AvisynthFilter::NewVideoFrame(int align, ScriptEnvironment^ env) {

@@ -16,7 +16,7 @@ namespace AvsFilterNet {
 
 	void NativeString::CleanUp() {
 		if (str) {
-			str = NULL;
+			str = nullptr;
 			Marshal::FreeHGlobal(ip);
 			ip = IntPtr::Zero;
 		}

@@ -30,9 +30,12 @@ namespace AvsFilterNet {
 
 	void VideoFrame::CleanUp()
 	{
-		_frame = NULL;
-		delete _pframe;
-		_pframe = NULL;
+		if (_frame)
+		{
+			_frame = nullptr;
+			delete _pframe;
+			_pframe = nullptr;
+		}
 	}
 
 	PNativeVideoFrame VideoFrame::GetNative() {

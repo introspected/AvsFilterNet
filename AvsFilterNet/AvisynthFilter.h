@@ -54,6 +54,7 @@ namespace AvsFilterNet {
 
 		/// <summary>Creates a new <see cref="VideoFrame"/> using <see cref="VideoFrame"/> of the filter itself.</summary>
 		VideoFrame^ NewVideoFrame(ScriptEnvironment^ env);
+		VideoFrame^ NewVideoFrame(ScriptEnvironment^ env, VideoFrame^ propSrc);
 		/// <summary>Creates a new <see cref="VideoFrame"/> using <see cref="VideoFrame"/> of the filter itself, with specified frame align.</summary>
 		VideoFrame^ NewVideoFrame(int align, ScriptEnvironment^ env);
 	internal:

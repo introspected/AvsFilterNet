@@ -46,15 +46,15 @@ namespace AvsFilterNet {
 		//{
 		if (_value) {
 			delete _value;
-			_value = NULL;
+			_value = nullptr;
 		}
-		if (_nts != nullptr) {
+		if (_nts) {
 			delete _nts;
 			_nts = nullptr;
 		}
 		if (_arrptr) {
 			delete[] _arrptr;
-			_arrptr = NULL;
+			_arrptr = nullptr;
 		}
 	}
 
